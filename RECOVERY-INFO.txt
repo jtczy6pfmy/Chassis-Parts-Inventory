@@ -1,0 +1,1 @@
+Recovery point for the inventory app: broken version was fe937dc09e496270fbd5a8a889c7e2ac3564da24. Previous known version is 0b273b749bedfaaede0d96acf3961659c3c7d39c.
