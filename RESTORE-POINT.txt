@@ -1,1 +1,1 @@
-The app was restored from the known pre-ordering-change commit 0b273b749bedfaaede0d96acf3961659c3c7d39c. This file is only a recovery marker.
+Known-good restoration target: 0b273b749bedfaaede0d96acf3961659c3c7d39c. The latest ordering change was reverted by restoring the repository's index.html to the version at that commit.
