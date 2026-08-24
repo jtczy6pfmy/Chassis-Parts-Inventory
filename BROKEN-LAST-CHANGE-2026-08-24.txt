@@ -1,0 +1,1 @@
+The current main branch before restoration was commit fe937dc09e496270fbd5a8a889c7e2ac3564da24. This marker preserves the point-in-time state that was reported as broken after the last change.
