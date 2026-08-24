@@ -1,0 +1,26 @@
+const {useReducer,useState}=React;
+const NAV=[['dashboard','🏠 Dashboard'],['parts','📦 Parts'],['transactions','🔄 Transactions'],['replenish','🛒 Replenish'],['pos','📋 Purchase Orders'],['counts','🔢 Counts'],['reports','📊 Reports'],['alerts','⚠️ Alerts']];
+
+function App(){
+ const [state,dispatch]=useReducer(inventoryReducer,loadInventoryState(sourceParts));
+ const [view,setView]=useState('dashboard'); const [selectedPart,setSelectedPart]=useState(null);
+ React.useEffect(()=>saveInventoryState(state),[state]);
+ const issue=(partNumber,qty=1)=>dispatch({type:'ISSUE',partNumber,qty});
+ const receive=(partNumber,qty=1)=>dispatch({type:'RECEIVE',partNumber,qty});
+ const createPO=(parts,quantities)=>{const po={number:'PO-'+new Date().getFullYear()+'-'+String(state.pos.length+1).padStart(4,'0'),status:'Draft',created:new Date().toISOString(),items:parts.map(p=>({partNumber:p.partNumber,description:p.description,qty:quantities[p.partNumber],unitCost:p.cost,supplier:p.supplier})),total:parts.reduce((s,p)=>s+(quantities[p.partNumber]||0)*p.cost,0)};dispatch({type:'CREATE_PO',po});setView('pos')};
+ return <>
+  <header className="app-header py-3"><div className="container-fluid px-3 px-lg-4"><h1 className="h3 mb-1">🚚 Chassis Parts Inventory</h1><div className="small opacity-75">Phase 2 • React components + Bootstrap + state management</div><ul className="nav nav-pills mt-3 flex-wrap gap-1">{NAV.map(([id,label])=><li className="nav-item" key={id}><button className={'nav-link '+(view===id?'active':'')} onClick={()=>{setView(id);window.scrollTo({top:0,behavior:'smooth'})}}>{label}</button></li>)}</ul></div></header>
+  <main className="container-fluid px-3 px-lg-4 py-4">
+   {view==='dashboard'&&<Dashboard catalog={state.catalog}/>} 
+   {view==='parts'&&<PartsView parts={state.catalog} onIssue={issue} onReceive={receive} onDetails={setSelectedPart}/>} 
+   {view==='transactions'&&<TransactionsView tx={state.tx}/>} 
+   {view==='replenish'&&<ReplenishView parts={state.catalog.filter(p=>p.stock<=p.min)} onCreatePO={createPO}/>} 
+   {view==='pos'&&<POView pos={state.pos}/>} 
+   {view==='counts'&&<SimpleView title="🔢 Cycle Counts">{state.catalog.slice(0,30).map(p=><div className="border rounded p-3 mb-2" key={p.partNumber}><strong>{p.partNumber}</strong> — System quantity {p.stock} • Count required</div>)}</SimpleView>}
+   {view==='reports'&&<SimpleView title="📊 Inventory Reports"><div className="row g-3"><div className="col-md-4"><div className="alert alert-primary">Inventory value: <b>{money(state.catalog.reduce((s,p)=>s+p.stock*p.cost,0))}</b></div></div><div className="col-md-4"><div className="alert alert-secondary">Total parts: <b>{state.catalog.length}</b></div></div><div className="col-md-4"><div className="alert alert-warning">Low/out: <b>{state.catalog.filter(p=>p.stock<=p.min).length}</b></div></div></div></SimpleView>}
+   {view==='alerts'&&<SimpleView title="⚠️ Inventory Alerts">{state.catalog.filter(p=>p.stock<=p.min).map(p=><div className="alert alert-warning" key={p.partNumber}><strong>{p.partNumber}</strong> — {status(p)} — {p.stock} on hand</div>)}{!state.catalog.some(p=>p.stock<=p.min)&&<div className="alert alert-success">No active alerts.</div>}</SimpleView>}
+  </main>
+  <PartModal part={selectedPart} onClose={()=>setSelectedPart(null)} onIssue={issue} onReceive={receive}/>
+ </>;
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
