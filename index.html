@@ -144,7 +144,7 @@ th{
   gap:16px
 }
 
-/* REPLENISH ORDERING */
+/* ORDERING */
 .replen-check{
   display:flex;
   align-items:center;
@@ -155,18 +155,21 @@ th{
   margin:8px 0;
   background:#fafcff
 }
+
 .replen-check input[type="checkbox"]{
   width:22px;
-  height:22px;
+  height:22px
 }
+
 .order-qty{
-  width:80px;
+  width:70px;
   padding:8px;
   border:1px solid #cbd6e2;
   border-radius:6px;
   font-size:16px;
   text-align:center
 }
+
 .order-summary{
   margin-top:20px;
   padding:16px;
@@ -174,9 +177,11 @@ th{
   background:#edf4ff;
   border:2px solid #1754c0
 }
+
 .order-summary h3{
   margin-top:0
 }
+
 .order-button{
   width:100%;
   padding:14px;
@@ -189,10 +194,12 @@ th{
   font-weight:bold;
   cursor:pointer
 }
+
 .order-button:disabled{
   background:#9aa8b8;
   cursor:not-allowed
 }
+
 .select-all-row{
   display:flex;
   justify-content:space-between;
@@ -202,6 +209,7 @@ th{
   padding-bottom:12px;
   border-bottom:1px solid #d8e1ed
 }
+
 .small-btn{
   padding:7px 10px;
   border:1px solid #cbd6e2;
@@ -210,10 +218,17 @@ th{
   cursor:pointer
 }
 
+.email-note{
+  margin-top:10px;
+  font-size:13px;
+  color:#526579
+}
+
 @media(max-width:800px){
   .two{
     grid-template-columns:1fr
   }
+
   .view{
     padding:10px
   }
@@ -224,20 +239,49 @@ th{
 <body>
 
 <header>
+
 <h1>🚚 Chassis Parts Inventory</h1>
+
 <div>Demo inventory system</div>
 
 <nav>
-<button class="tab active" data-v="dashboard">🏠 Dashboard</button>
-<button class="tab" data-v="partsView">📦 Parts</button>
-<button class="tab" data-v="txView">🔄 Transactions</button>
-<button class="tab" data-v="replenView">🛒 Replenish</button>
-<button class="tab" data-v="poView">📋 Purchase Orders</button>
-<button class="tab" data-v="countsView">🔢 Counts</button>
-<button class="tab" data-v="reportsView">📊 Reports</button>
-<button class="tab" data-v="alertsView">⚠️ Alerts</button>
+
+<button class="tab active" data-v="dashboard">
+🏠 Dashboard
+</button>
+
+<button class="tab" data-v="partsView">
+📦 Parts
+</button>
+
+<button class="tab" data-v="txView">
+🔄 Transactions
+</button>
+
+<button class="tab" data-v="replenView">
+🛒 Replenish
+</button>
+
+<button class="tab" data-v="poView">
+📋 Purchase Orders
+</button>
+
+<button class="tab" data-v="countsView">
+🔢 Counts
+</button>
+
+<button class="tab" data-v="reportsView">
+📊 Reports
+</button>
+
+<button class="tab" data-v="alertsView">
+⚠️ Alerts
+</button>
+
 </nav>
+
 </header>
+
 
 <section id="dashboard" class="view active">
 
@@ -274,20 +318,29 @@ INVENTORY VALUE
 </div>
 
 <div class="card">
+
 <h2>📈 Parts Used — Last 8 Weeks</h2>
+
 <div id="chart" class="chartrow"></div>
+
 </div>
 
 <div class="two">
 
 <div class="card">
+
 <h2>🔥 Most Used Parts</h2>
+
 <div id="topParts"></div>
+
 </div>
 
 <div class="card">
+
 <h2>📦 Stock Health</h2>
+
 <div id="stockHealth"></div>
+
 </div>
 
 </div>
@@ -308,6 +361,7 @@ INVENTORY VALUE
 <table>
 
 <thead>
+
 <tr>
 <th>Part</th>
 <th>Description</th>
@@ -316,6 +370,7 @@ INVENTORY VALUE
 <th>On Hand</th>
 <th>Cost</th>
 </tr>
+
 </thead>
 
 <tbody id="partRows"></tbody>
@@ -323,6 +378,7 @@ INVENTORY VALUE
 </table>
 
 </div>
+
 </div>
 
 </section>
@@ -352,24 +408,33 @@ INVENTORY VALUE
 </div>
 
 
-<!-- NEW ORDER SECTION -->
-
 <div class="card">
 
 <h2>📦 Order New Parts</h2>
 
 <p>
-Select the parts you want to order and enter the quantity for each part.
+Select the parts you want to order and enter the quantity.
 </p>
 
 <div class="select-all-row">
 
 <label>
-<input type="checkbox" id="selectAllParts">
-<b>Select All Replenishment Parts</b>
+
+<input
+type="checkbox"
+id="selectAllParts"
+>
+
+<b>
+Select All Replenishment Parts
+</b>
+
 </label>
 
-<button class="small-btn" id="clearSelections">
+<button
+class="small-btn"
+id="clearSelections"
+>
 Clear
 </button>
 
@@ -383,7 +448,11 @@ Clear
 <h3>🧾 Order Summary</h3>
 
 <div id="orderSummary">
-<p>No parts selected.</p>
+
+<p>
+No parts selected.
+</p>
+
 </div>
 
 <button
@@ -391,8 +460,15 @@ id="placeOrderBtn"
 class="order-button"
 disabled
 >
-📋 Order Selected Parts
+📧 Create Order & Open Outlook
 </button>
+
+<div class="email-note">
+
+Order requests will be prepared for:
+<b>Partserson@democompany.com</b>
+
+</div>
 
 </div>
 
@@ -457,7 +533,9 @@ disabled
 
 const $=x=>document.getElementById(x);
 
-const K='cpi-demo-v8';
+const K='cpi-demo-v9';
+
+const ORDER_EMAIL='Partserson@democompany.com';
 
 const src=
 typeof parts!=='undefined'
@@ -482,12 +560,15 @@ const loc=[
 let state;
 
 try{
-state=JSON.parse(localStorage.getItem(K));
+state=JSON.parse(
+localStorage.getItem(K)
+);
 }catch(e){}
 
 if(!state?.catalog?.length){
 
 state={
+
 catalog:src.map((p,i)=>({
 
 partNumber:
@@ -530,16 +611,21 @@ target:
 })),
 
 tx:[],
+
 pos:[]
+
 };
 
-state.catalog.slice(0,35).forEach((p,i)=>{
+state.catalog
+.slice(0,35)
+.forEach((p,i)=>{
 
 state.tx.push({
 
 date:
 new Date(
-Date.now()-(i+1)*864e5
+Date.now()-
+(i+1)*864e5
 ).toISOString(),
 
 part:p.partNumber,
@@ -551,7 +637,8 @@ qty:
 1+i%9,
 
 ref:
-'DEMO-'+(5600+i)
+'DEMO-'+
+(5600+i)
 
 });
 
@@ -613,7 +700,9 @@ Date.now()-d[3]*864e5
 
 expected:
 new Date(
-Date.now()+(i===3?-4:3+i*2)*864e5
+Date.now()+
+(i===3?-4:3+i*2)*
+864e5
 ).toISOString(),
 
 lines:
@@ -662,7 +751,8 @@ return p.stock<=0
 
 function money(n){
 
-return '$'+Number(n).toFixed(2);
+return '$'+
+Number(n).toFixed(2);
 
 }
 
@@ -729,43 +819,68 @@ state.catalog.reduce(
 let max=Math.max(...weeks);
 
 $('weekUse').textContent=week;
+
 $('monthUse').textContent=month;
+
 $('avgUse').textContent=avg;
+
 $('riskCount').textContent=risk;
+
 $('invValue').textContent=
-'$'+Math.round(val).toLocaleString();
+'$'+
+Math.round(val)
+.toLocaleString();
 
 $('chart').innerHTML=
 weeks.map((n,i)=>
+
 '<div class="col">'+
+
 '<b>'+n+'</b>'+
+
 '<div style="height:'+
-Math.max(8,n/max*170)+
+Math.max(
+8,
+n/max*170
+)+
 'px"></div>'+
-'<small>W'+(i+1)+'</small>'+
+
+'<small>W'+
+(i+1)+
+'</small>'+
+
 '</div>'
+
 ).join('');
 
 let top=
 [...state.catalog]
 .sort(
-(a,b)=>b.usage[7]-a.usage[7]
+(a,b)=>
+b.usage[7]-
+a.usage[7]
 )
 .slice(0,5);
 
-let m=top[0]?.usage[7]||1;
+let m=
+top[0]?.usage[7]||1;
 
 $('topParts').innerHTML=
 top.map(p=>
+
 '<p><b>'+
 p.partNumber+
 '</b> '+
 p.usage[7]+
+
 '<div class="barwrap">'+
+
 '<div class="bar" style="width:'+
 (p.usage[7]/m*100)+
 '%"></div>'+
+
 '</div></p>'
+
 ).join('');
 
 let h=
@@ -792,15 +907,20 @@ $('stockHealth').innerHTML=
 ['Out of Stock',o]
 ]
 .map(x=>
+
 '<p><b>'+
 x[0]+
 '</b> '+
 x[1]+
+
 '<div class="barwrap">'+
+
 '<div class="bar" style="width:'+
 (x[1]/t*100)+
 '%"></div>'+
+
 '</div></p>'
+
 )
 .join('');
 
@@ -814,6 +934,7 @@ $('search').value.toLowerCase();
 
 $('partRows').innerHTML=
 state.catalog
+
 .filter(p=>
 (
 p.partNumber+
@@ -824,15 +945,37 @@ p.location
 .toLowerCase()
 .includes(q)
 )
+
 .map(p=>
+
 '<tr>'+
-'<td>'+p.partNumber+'</td>'+
-'<td>'+p.description+'</td>'+
-'<td>'+p.supplier+'</td>'+
-'<td>'+p.location+'</td>'+
-'<td>'+p.stock+'</td>'+
-'<td>'+money(p.cost)+'</td>'+
+
+'<td>'+
+p.partNumber+
+'</td>'+
+
+'<td>'+
+p.description+
+'</td>'+
+
+'<td>'+
+p.supplier+
+'</td>'+
+
+'<td>'+
+p.location+
+'</td>'+
+
+'<td>'+
+p.stock+
+'</td>'+
+
+'<td>'+
+money(p.cost)+
+'</td>'+
+
 '</tr>'
+
 )
 .join('');
 
@@ -845,24 +988,36 @@ $('txRows').innerHTML=
 state.tx
 .slice(0,30)
 .map(t=>
+
 '<div class="item">'+
-'<b>'+t.type+'</b> • '+
+
+'<b>'+
+t.type+
+'</b> • '+
 t.part+
 ' • Qty '+
 t.qty+
+
 '<br><small>'+
-new Date(t.date).toLocaleDateString()+
+
+new Date(
+t.date
+).toLocaleDateString()+
+
 ' • '+
 t.ref+
+
 '</small>'+
+
 '</div>'
+
 )
 .join('');
 
 }
 
 
-/* REPLENISH DISPLAY */
+/* REPLENISH */
 
 function renderReplen(){
 
@@ -872,16 +1027,25 @@ p=>p.stock<=p.min
 );
 
 $('replenRows').innerHTML=
+
 r.map(p=>
+
 '<div class="item">'+
-'<b>'+p.partNumber+'</b>'+
-' — '+
+
+'<b>'+
+p.partNumber+
+'</b> — '+
+
 p.stock+
 ' on hand • Suggested order: '+
+
 (p.target-p.stock)+
 ' • '+
+
 p.supplier+
+
 '</div>'
+
 ).join('')||
 
 '<p class="good">'+
@@ -893,7 +1057,7 @@ renderOrderParts();
 }
 
 
-/* NEW ORDER PART SELECTION */
+/* ORDER PARTS */
 
 function renderOrderParts(){
 
@@ -905,7 +1069,9 @@ p=>p.stock<=p.min
 if(!r.length){
 
 $('orderParts').innerHTML=
-'<p class="good">No parts currently need replenishment.</p>';
+'<p class="good">'+
+'No parts currently need replenishment.'+
+'</p>';
 
 $('placeOrderBtn').disabled=true;
 
@@ -914,6 +1080,7 @@ return;
 }
 
 $('orderParts').innerHTML=
+
 r.map(p=>{
 
 let suggested=
@@ -922,7 +1089,7 @@ Math.max(
 p.target-p.stock
 );
 
-return`
+return `
 
 <div class="replen-check">
 
@@ -934,14 +1101,26 @@ data-part="${p.partNumber}"
 
 <div style="flex:1">
 
-<b>${p.partNumber}</b><br>
+<b>
+${p.partNumber}
+</b>
+
+<br>
 
 <small>
+
 ${p.description}
+
 <br>
+
+Supplier:
 ${p.supplier}
+
 <br>
-${p.stock} on hand
+
+On Hand:
+${p.stock}
+
 </small>
 
 </div>
@@ -949,7 +1128,9 @@ ${p.stock} on hand
 <div>
 
 <label>
+
 Qty
+
 <br>
 
 <input
@@ -975,19 +1156,21 @@ updateOrderSummary();
 }
 
 
-/* ORDER SUMMARY */
-
 function getSelectedParts(){
 
 let selected=[];
 
 document
-.querySelectorAll('.part-select:checked')
+.querySelectorAll(
+'.part-select:checked'
+)
 .forEach(cb=>{
 
 let part=
 state.catalog.find(
-p=>p.partNumber===cb.dataset.part
+p=>
+p.partNumber===
+cb.dataset.part
 );
 
 let qtyInput=
@@ -998,13 +1181,17 @@ cb.dataset.part+
 );
 
 let qty=
-parseInt(qtyInput?.value||0,10);
+parseInt(
+qtyInput?.value||0,
+10
+);
 
 if(part && qty>0){
 
 selected.push({
 
 part:part,
+
 qty:qty
 
 });
@@ -1017,6 +1204,8 @@ return selected;
 
 }
 
+
+/* SUMMARY */
 
 function updateOrderSummary(){
 
@@ -1042,7 +1231,9 @@ selected.reduce(
 
 let totalCost=
 selected.reduce(
-(s,x)=>s+(x.qty*x.part.cost),
+(s,x)=>
+s+
+(x.qty*x.part.cost),
 0
 );
 
@@ -1063,22 +1254,25 @@ money(totalCost)+
 '<hr>'+
 
 selected.map(x=>
+
 '<div>'+
 x.part.partNumber+
 ' — Qty '+
 x.qty+
 ' — '+
-money(x.qty*x.part.cost)+
+money(
+x.qty*x.part.cost
+)+
 '</div>'
-)
-.join('');
+
+).join('');
 
 $('placeOrderBtn').disabled=false;
 
 }
 
 
-/* CREATE PURCHASE ORDER */
+/* CREATE PO + OUTLOOK EMAIL */
 
 function placeOrder(){
 
@@ -1095,12 +1289,16 @@ return;
 
 }
 
+
+/* GET NEXT PO NUMBER */
+
 let nextNumber=1048;
 
 if(state.pos.length){
 
 let nums=
 state.pos
+
 .map(po=>
 parseInt(
 String(po.id)
@@ -1108,7 +1306,10 @@ String(po.id)
 10
 )
 )
-.filter(n=>!isNaN(n));
+
+.filter(
+n=>!isNaN(n)
+);
 
 if(nums.length){
 
@@ -1119,8 +1320,13 @@ Math.max(...nums)+1;
 
 }
 
-let suppliers=
-[
+let poNumber=
+'PO-'+nextNumber;
+
+
+/* SUPPLIERS */
+
+let suppliers=[
 ...new Set(
 selected.map(
 x=>x.part.supplier
@@ -1133,9 +1339,12 @@ suppliers.length===1
 ?suppliers[0]
 :'Multiple Suppliers';
 
+
+/* CREATE PO */
+
 let po={
 
-id:'PO-'+nextNumber,
+id:poNumber,
 
 supplier:supplier,
 
@@ -1146,13 +1355,16 @@ new Date().toISOString(),
 
 expected:
 new Date(
-Date.now()+7*864e5
+Date.now()+
+7*864e5
 ).toISOString(),
 
 lines:
 selected.map(x=>({
 
 part:x.part.partNumber,
+
+description:x.part.description,
 
 qty:x.qty,
 
@@ -1169,7 +1381,92 @@ state.pos.unshift(po);
 save();
 
 
-/* CLEAR SELECTIONS */
+/* BUILD EMAIL */
+
+let subject=
+'Parts Order Request - '+
+poNumber;
+
+
+/* EMAIL BODY */
+
+let body=
+'Hello,'+
+'\n\n'+
+
+'Please order the following chassis parts:'+
+'\n\n'+
+
+selected.map(x=>
+
+'Part Number: '+
+x.part.partNumber+
+'\n'+
+
+'Description: '+
+x.part.description+
+'\n'+
+
+'Quantity: '+
+x.qty+
+'\n'+
+
+'Supplier: '+
+x.part.supplier+
+'\n'+
+
+'Estimated Unit Cost: '+
+money(x.part.cost)+
+'\n'+
+
+'Estimated Line Total: '+
+money(
+x.qty*x.part.cost
+)+
+
+'\n'
+
+).join('\n')+
+
+'\n'+
+
+'Purchase Order: '+
+poNumber+
+'\n'+
+
+'Estimated Order Total: '+
+money(
+selected.reduce(
+(s,x)=>
+s+(x.qty*x.part.cost),
+0
+)
+)+
+
+'\n\n'+
+
+'Please confirm availability and expected delivery.'+
+
+'\n\nThank you.';
+
+
+/* OUTLOOK MAILTO */
+
+let mailto=
+'mailto:'+
+encodeURIComponent(ORDER_EMAIL)+
+'?subject='+
+encodeURIComponent(subject)+
+'&body='+
+encodeURIComponent(body);
+
+
+/* OPEN EMAIL */
+
+window.location.href=mailto;
+
+
+/* UPDATE UI */
 
 document
 .querySelectorAll('.part-select')
@@ -1183,15 +1480,6 @@ updateOrderSummary();
 
 renderPO();
 
-alert(
-po.id+
-' created successfully with '+
-selected.length+
-' part line(s).'
-);
-
-show('poView');
-
 }
 
 
@@ -1200,25 +1488,33 @@ show('poView');
 function renderPO(){
 
 let badge=s=>
+
 s==='Received'
 ?'good'
+
 :s==='Overdue'
 ?'danger'
+
 :s==='Partially Received'
 ?'warning'
+
 :'';
 
 $('poList').innerHTML=
+
 state.pos.map(po=>{
 
 let total=
 po.lines.reduce(
-(s,l)=>s+l.qty*l.cost,
+(s,l)=>
+s+
+l.qty*l.cost,
 0
 );
 
 let lines=
 po.lines.map(l=>
+
 '<li>'+
 l.part+
 ' — '+
@@ -1228,37 +1524,50 @@ l.qty+
 ' @ '+
 money(l.cost)+
 '</li>'
+
 ).join('');
 
-return`
+return `
 
 <div class="item">
 
 <h3>
+
 ${po.id}
 
 <span class="pill ${badge(po.status)}">
+
 ${po.status}
+
 </span>
 
 </h3>
 
-<b>${po.supplier}</b>
+<b>
+${po.supplier}
+</b>
 
 <br>
 
 Ordered:
-${new Date(po.date).toLocaleDateString()}
+${new Date(
+po.date
+).toLocaleDateString()}
 
 •
 
 Expected:
-${new Date(po.expected).toLocaleDateString()}
+${new Date(
+po.expected
+).toLocaleDateString()}
 
 <br>
 
 Estimated total:
-<b>${money(total)}</b>
+
+<b>
+${money(total)}
+</b>
 
 <details>
 
@@ -1267,7 +1576,9 @@ View ${po.lines.length} line items
 </summary>
 
 <ul>
+
 ${lines}
+
 </ul>
 
 </details>
@@ -1284,6 +1595,7 @@ ${lines}
 function renderCounts(){
 
 $('countRows').innerHTML=
+
 '<p>Demo cycle counts are ready for testing across '+
 state.catalog.length+
 ' parts.</p>';
@@ -1294,6 +1606,7 @@ state.catalog.length+
 function renderReports(){
 
 $('reportRows').innerHTML=
+
 '<p>Fast movers, slow movers, stockouts, supplier value, usage trends, and purchase-order activity are populated with demo data.</p>';
 
 }
@@ -1307,34 +1620,49 @@ p=>status(p)!=='HEALTHY'
 );
 
 $('alertRows').innerHTML=
+
 a.map(p=>
+
 '<div class="item '+
-(p.stock===0?'danger':'warning')+
+(p.stock===0
+?'danger'
+:'warning')+
 '">'+
+
 '<b>'+
 p.partNumber+
 '</b> — '+
+
 status(p)+
 ' • '+
 p.stock+
 ' on hand • Reorder at '+
 p.min+
+
 '</div>'
+
 ).join('')||
 
-'<p class="good">No alerts.</p>';
+'<p class="good">
+No alerts.
+</p>';
 
 }
 
 
-/* EVENT HANDLERS */
+/* NAVIGATION */
 
 document
 .querySelectorAll('.tab')
 .forEach(b=>
+
 b.onclick=()=>
 show(b.dataset.v)
+
 );
+
+
+/* SEARCH */
 
 $('search').oninput=
 renderParts;
@@ -1342,12 +1670,15 @@ renderParts;
 
 /* SELECT ALL */
 
-$('selectAllParts').onchange=function(){
+$('selectAllParts').onchange=
+function(){
 
 document
 .querySelectorAll('.part-select')
 .forEach(cb=>{
+
 cb.checked=this.checked;
+
 });
 
 updateOrderSummary();
@@ -1357,12 +1688,15 @@ updateOrderSummary();
 
 /* CLEAR */
 
-$('clearSelections').onclick=function(){
+$('clearSelections').onclick=
+function(){
 
 document
 .querySelectorAll('.part-select')
 .forEach(cb=>{
+
 cb.checked=false;
+
 });
 
 $('selectAllParts').checked=false;
@@ -1372,7 +1706,7 @@ updateOrderSummary();
 };
 
 
-/* INDIVIDUAL SELECTION */
+/* CHECKBOX / QUANTITY CHANGES */
 
 document.addEventListener(
 'change',
@@ -1413,12 +1747,19 @@ placeOrder;
 function renderAll(){
 
 renderDashboard();
+
 renderParts();
+
 renderTx();
+
 renderReplen();
+
 renderPO();
+
 renderCounts();
+
 renderReports();
+
 renderAlerts();
 
 }
