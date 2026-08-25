@@ -1,5 +1,5 @@
 const LOCAL_PART_IMAGES = {
-  BEN802052: './assets/images/page_003_image_01_xref_16.png'
+  BEN802052: 'assets/images/page_003_image_01_xref_16.png'
 };
 
 const IMAGE_FIELDS = [
@@ -15,15 +15,27 @@ const IMAGE_FIELDS = [
 
 const IMAGE_RE=/\.(?:png|jpe?g|webp|gif|bmp|svg)(?:\?.*)?$/i;
 
+function getRepoBasePath() {
+  const pathSegments = window.location.pathname.split('/').filter(Boolean);
+  // If hosted on GitHub Pages under a repository name, prepend the repo name
+  if (window.location.hostname.includes('github.io') && pathSegments.length > 0) {
+    return '/' + pathSegments[0] + '/';
+  }
+  return './';
+}
+
 function normalizePartImage(raw){
   if(!raw) return '';
   let s=String(raw).trim().replaceAll('\\','/');
   if(/^https?:\/\//i.test(s) || s.startsWith('data:')) return s;
+  
   s=s.replace(/^\.\//,'').replace(/^\//,'');
-  if(s.startsWith('assets/images/')) return './'+s;
-  if(s.startsWith('assets/')) return './'+s;
-  if(!s.includes('/')) return './assets/images/'+s;
-  return './'+s;
+  const basePath = getRepoBasePath();
+
+  if(s.startsWith('assets/')) return basePath + s;
+  if(!s.includes('/')) return basePath + 'assets/images/' + s;
+  
+  return basePath + s;
 }
 
 function getPartNumber(part){
@@ -74,7 +86,7 @@ function findSourceCatalog(){
 
 function getPartImage(part){
   const partNumber=getPartNumber(part);
-  if(LOCAL_PART_IMAGES[partNumber]) return LOCAL_PART_IMAGES[partNumber];
+  if(LOCAL_PART_IMAGES[partNumber]) return normalizePartImage(LOCAL_PART_IMAGES[partNumber]);
   const direct=getImageFromRecord(part);
   if(direct) return direct;
   if(partNumber){
