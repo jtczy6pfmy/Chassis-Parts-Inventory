@@ -15,27 +15,21 @@ const IMAGE_FIELDS = [
 
 const IMAGE_RE=/\.(?:png|jpe?g|webp|gif|bmp|svg)(?:\?.*)?$/i;
 
-function getRepoBasePath() {
-  const pathSegments = window.location.pathname.split('/').filter(Boolean);
-  // If hosted on GitHub Pages under a repository name, prepend the repo name
-  if (window.location.hostname.includes('github.io') && pathSegments.length > 0) {
-    return '/' + pathSegments[0] + '/';
-  }
-  return './';
-}
-
 function normalizePartImage(raw){
   if(!raw) return '';
   let s=String(raw).trim().replaceAll('\\','/');
   if(/^https?:\/\//i.test(s) || s.startsWith('data:')) return s;
   
+  // Clean up any existing relative/absolute prefixes
   s=s.replace(/^\.\//,'').replace(/^\//,'');
-  const basePath = getRepoBasePath();
 
-  if(s.startsWith('assets/')) return basePath + s;
-  if(!s.includes('/')) return basePath + 'assets/images/' + s;
+  // If it already starts with assets/, prepend relative path correctly
+  if(s.startsWith('assets/')) return './' + s;
   
-  return basePath + s;
+  // If it's just a filename, point it to the assets/images directory
+  if(!s.includes('/')) return './assets/images/' + s;
+  
+  return './' + s;
 }
 
 function getPartNumber(part){
