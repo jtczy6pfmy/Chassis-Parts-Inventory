@@ -20,16 +20,10 @@ function normalizePartImage(raw){
   let s=String(raw).trim().replaceAll('\\','/');
   if(/^https?:\/\//i.test(s) || s.startsWith('data:')) return s;
   
-  // Clean up leading dots and slashes
   s=s.replace(/^\.\//,'').replace(/^\//,'');
 
-  // If the path already has assets/ in it, ensure it starts with ./
   if(s.startsWith('assets/')) return './' + s;
-  
-  // If it starts with images/ but missed assets/, fix it automatically!
   if(s.startsWith('images/')) return './assets/' + s;
-  
-  // If it's just a raw filename (e.g. page_003_image_02.png), route it through assets/images/
   if(!s.includes('/')) return './assets/images/' + s;
   
   return './' + s;
@@ -81,6 +75,12 @@ function findSourceCatalog(){
   return [];
 }
 
+function getMartecFallbackImage(partNumber){
+  if(!partNumber) return '';
+  // Fallback search link to Martec International chassis parts catalog search
+  return `https://www.martecintl.com/search?q=${encodeURIComponent(partNumber)}`;
+}
+
 function getPartImage(part){
   const partNumber=getPartNumber(part);
   if(LOCAL_PART_IMAGES[partNumber]) return normalizePartImage(LOCAL_PART_IMAGES[partNumber]);
@@ -91,6 +91,9 @@ function getPartImage(part){
     const sourcePart=source.find(p=>getPartNumber(p)===partNumber);
     const sourceImage=getImageFromRecord(sourcePart);
     if(sourceImage) return sourceImage;
+    
+    // Fallback to Martec International if no local image or record image exists
+    return getMartecFallbackImage(partNumber);
   }
   return '';
 }
