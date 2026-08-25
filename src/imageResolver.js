@@ -1,7 +1,5 @@
 const LOCAL_PART_IMAGES = {
-  BEN802052: 'assets/images/page_003_image_01_xref_16.png',
-  // You can add specific mappings for missing parts here if needed:
-  // WBC4494310080: 'assets/images/your_image_filename.png'
+  BEN802052: 'assets/images/page_003_image_01_xref_16.png'
 };
 
 const IMAGE_FIELDS = [
@@ -77,12 +75,6 @@ function findSourceCatalog(){
   return [];
 }
 
-function getMartecFallbackImage(partNumber){
-  if(!partNumber) return '';
-  // Fallback search link to Martec International chassis parts catalog search
-  return `https://www.martecintl.com/search?q=${encodeURIComponent(partNumber)}`;
-}
-
 function getPartImage(part){
   const partNumber=getPartNumber(part);
   if(LOCAL_PART_IMAGES[partNumber]) return normalizePartImage(LOCAL_PART_IMAGES[partNumber]);
@@ -94,8 +86,8 @@ function getPartImage(part){
     const sourceImage=getImageFromRecord(sourcePart);
     if(sourceImage) return sourceImage;
     
-    // Fallback to Martec International search URL if no local image exists
-    return getMartecFallbackImage(partNumber);
+    // Automatically construct direct external image URL if no local file exists
+    return `https://www.aurorapartstogo.com/myaurora/parts/${partNumber}.gif`;
   }
   return '';
 }
