@@ -1,5 +1,7 @@
 const LOCAL_PART_IMAGES = {
-  BEN802052: 'assets/images/page_003_image_01_xref_16.png'
+  BEN802052: 'assets/images/page_003_image_01_xref_16.png',
+  // You can add specific mappings for missing parts here if needed:
+  // WBC4494310080: 'assets/images/your_image_filename.png'
 };
 
 const IMAGE_FIELDS = [
@@ -92,7 +94,7 @@ function getPartImage(part){
     const sourceImage=getImageFromRecord(sourcePart);
     if(sourceImage) return sourceImage;
     
-    // Fallback to Martec International if no local image or record image exists
+    // Fallback to Martec International search URL if no local image exists
     return getMartecFallbackImage(partNumber);
   }
   return '';
