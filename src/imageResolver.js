@@ -20,13 +20,16 @@ function normalizePartImage(raw){
   let s=String(raw).trim().replaceAll('\\','/');
   if(/^https?:\/\//i.test(s) || s.startsWith('data:')) return s;
   
-  // Clean up any existing relative/absolute prefixes
+  // Clean up leading dots and slashes
   s=s.replace(/^\.\//,'').replace(/^\//,'');
 
-  // If it already starts with assets/, prepend relative path correctly
+  // If the path already has assets/ in it, ensure it starts with ./
   if(s.startsWith('assets/')) return './' + s;
   
-  // If it's just a filename, point it to the assets/images directory
+  // If it starts with images/ but missed assets/, fix it automatically!
+  if(s.startsWith('images/')) return './assets/' + s;
+  
+  // If it's just a raw filename (e.g. page_003_image_02.png), route it through assets/images/
   if(!s.includes('/')) return './assets/images/' + s;
   
   return './' + s;
