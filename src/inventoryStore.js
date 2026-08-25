@@ -1,6 +1,9 @@
 const CPI_STORAGE_KEY='cpi-phase3-v2';
 function partKey(p){return String(p?.partNumber||p?.PartNumber||p?.part||'').trim();}
-function sourceImage(p){return p?.image||p?.imagePath||p?.image_path||p?.imageUrl||p?.image_url||p?.catalogImage||p?.catalog_image||'';}
+function sourceImage(p){
+  if(typeof getImageFromRecord==='function') return getImageFromRecord(p)||'';
+  return p?.image||p?.imagePath||p?.image_path||p?.imageUrl||p?.image_url||p?.catalogImage||p?.catalog_image||'';
+}
 function loadInventoryState(sourceParts=[]){
  const suppliers=['FleetPride','Parts Authority','Wabash Parts','OEM Supply','Mid-Atlantic Fleet'];
  const locations=['Harrisburg • Rack A • Bin 04','Harrisburg • Rack B • Bin 12','Warehouse • Shelf C • Bin 07','Parts Room • Rack D • Bin 02'];
