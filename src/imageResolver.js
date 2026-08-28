@@ -1,6 +1,7 @@
 const LOCAL_PART_IMAGES = {
   BEN802052: 'assets/images/page_003_image_01_xref_16.png',
-  WBC8946049440: 'assets/images/WBC8946049440.jpg'
+  WBC8946049440: 'assets/images/WBC8946049440.jpg',
+  WBC4006120940: 'assets/images/WBC4006120940.jpg'
 };
 
 const IMAGE_FIELDS = [
