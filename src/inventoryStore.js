@@ -1,5 +1,5 @@
 const CPI_STORAGE_KEY='cpi-phase3-v2';
-const CPI_DEMO_VERSION='realistic-demo-v1';
+const CPI_DEMO_VERSION='realistic-demo-v2';
 function partKey(p){return String(p?.partNumber||p?.PartNumber||p?.part||'').trim();}
 function sourceImage(p){
   if(typeof getImageFromRecord==='function') return getImageFromRecord(p)||'';
@@ -7,11 +7,17 @@ function sourceImage(p){
 }
 function demoStock(i,min,target,prior){
   if(Number.isFinite(prior)) return prior;
-  const pattern=i%17;
-  if(pattern===0) return 0;
-  if(pattern===5||pattern===12) return Math.max(1,Math.floor(min*.55));
-  const spread=Math.max(2,target-min);
-  return Math.max(min+1,Math.min(target+Math.floor(spread*.35),min+2+(i*7)%Math.max(3,spread+2)));
+  const profile=i%20;
+  if(profile===0||profile===13) return 0;
+  if(profile===4||profile===11||profile===18) return Math.max(1,Math.ceil(min*.45));
+  if(profile===7||profile===16) return Math.max(min+1,Math.round(target*.8));
+  if(profile===9||profile===19) return Math.max(min+2,Math.round(target*1.35));
+  const cycle=[.55,.72,.9,1.05,1.2,.65,.82,1.1];
+  return Math.max(1,Math.round(target*cycle[i%cycle.length]));
+}
+function demoUsage(i,min){
+  const demand=i%5===0?1.45:i%5===1?1.2:i%5===2?.85:i%5===3?.6:.4;
+  return Array.from({length:8},(_,w)=>Math.max(1,Math.round((min*.7+((i*7+w*5)%Math.max(4,min+8)))*demand)));
 }
 function loadInventoryState(sourceParts=[]){
  const suppliers=['FleetPride','Parts Authority','Wabash Parts','OEM Supply','Mid-Atlantic Fleet'];
@@ -22,10 +28,10 @@ function loadInventoryState(sourceParts=[]){
    const key=partKey(p),prior=oldByPart.get(key)||{};
    const min=Number.isFinite(prior.min)?prior.min:(i%3===0?10:i%3===1?6:3);
    const target=Number.isFinite(prior.target)?prior.target:(i%3===0?30:i%3===1?18:10);
-   return{...p,partNumber:key||`PART-${i+1}`,description:p.description||p.Description||prior.description||'Chassis replacement part',image:sourceImage(p)||prior.image||'',stock:demoStock(i,min,target,Number.isFinite(prior.stock)?prior.stock:undefined),cost:Number.isFinite(prior.cost)?prior.cost:+(8+(i*13)%115+.95).toFixed(2),supplier:p.supplier||p.Supplier||prior.supplier||suppliers[i%suppliers.length],location:p.location||p.Location||prior.location||locations[i%locations.length],usage:Array.isArray(prior.usage)?prior.usage:Array.from({length:8},(_,w)=>Math.max(1,Math.round(min*.35)+((i*5+w*3)%Math.max(3,min+4)))),min,target};
+   return{...p,partNumber:key||`PART-${i+1}`,description:p.description||p.Description||prior.description||'Chassis replacement part',image:sourceImage(p)||prior.image||'',stock:demoStock(i,min,target,Number.isFinite(prior.stock)?prior.stock:undefined),cost:Number.isFinite(prior.cost)?prior.cost:+(8+(i*13)%115+.95).toFixed(2),supplier:p.supplier||p.Supplier||prior.supplier||suppliers[i%suppliers.length],location:p.location||p.Location||prior.location||locations[i%locations.length],usage:Array.isArray(prior.usage)?prior.usage:demoUsage(i,min),min,target};
  });
  return{catalog:catalog.length?catalog:(old?.catalog||[]),tx:old?.tx||[],pos:old?.pos||[],demoVersion:CPI_DEMO_VERSION};
 }
 function saveInventoryState(state){try{localStorage.setItem(CPI_STORAGE_KEY,JSON.stringify(state))}catch(_){} }
-function inventoryReducer(state,action){switch(action.type){case'ISSUE':return{...state,catalog:state.catalog.map(p=>p.partNumber===action.partNumber?{...p,stock:Math.max(0,p.stock-action.qty),usage:p.usage.map((n,i)=>i===7?n+action.qty:n)}:p),tx:[...state.tx,{date:new Date().toISOString(),part:action.partNumber,type:'ISSUE',qty:action.qty,ref:action.ref||`WEB-${Date.now()}`}]};case'RECEIVE':return{...state,catalog:state.catalog.map(p=>p.partNumber===action.partNumber?{...p,stock:p.stock+action.qty}:p),tx:[...state.tx,{date:new Date().toISOString(),part:action.partNumber,type:'RECEIVE',qty:action.qty,ref:action.ref||`WEB-${Date.now()}`}]};case'CREATE_PO':return{...state,pos:[...state.pos,action.po]};default:return state;}}
+function inventoryReducer(state,action){switch(action.type){case'ISSUE':return{...state,catalog:state.catalog.map(p=>p.partNumber===action.partNumber?{...p,stock:Math.max(0,p.stock-action.qty),usage:p.usage.map((n,i)=>i===7?n+action.qty:n)}:p),tx:[...state.tx,{date:new Date().toISOString(),part:action.partNumber,type:'ISSUE',qty:action.qty,ref:action.ref||`WEB-${Date.now()}`,reason:action.reason||'',workOrder:action.workOrder||''}]};case'RECEIVE':return{...state,catalog:state.catalog.map(p=>p.partNumber===action.partNumber?{...p,stock:p.stock+action.qty}:p),tx:[...state.tx,{date:new Date().toISOString(),part:action.partNumber,type:'RECEIVE',qty:action.qty,ref:action.ref||`WEB-${Date.now()}`,reason:action.reason||'Receipt',workOrder:action.workOrder||''}]};case'CREATE_PO':return{...state,pos:[...state.pos,action.po]};case'UPDATE_PO':return{...state,pos:state.pos.map(p=>p.number===action.number?{...p,...action.changes}:p)};default:return state;}}
 function apiClient(baseUrl=''){return{async get(path){return fetch(baseUrl+path).then(r=>{if(!r.ok)throw new Error(`GET ${path}: ${r.status}`);return r.json()})},async post(path,body){return fetch(baseUrl+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(r=>{if(!r.ok)throw new Error(`POST ${path}: ${r.status}`);return r.json()})}}}
